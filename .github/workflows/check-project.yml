@@ -1,0 +1,48 @@
+name: AI Workflow Check
+
+# Run this workflow whenever code is pushed to the main branch.
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-project:
+    # Use the latest Ubuntu runner provided by GitHub Actions.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Download the repository files into the runner.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Print the required messages in the Actions log.
+      - name: Print Messages
+        run: |
+          echo "코드 수정이 일어났습니다."
+          echo "AI Workflow 자동화가 실행되었습니다."
+          echo "자동 검사 완료"
+
+      # Show the current file list in the project root.
+      - name: Show Project Files
+        run: ls -la
+
+      # Check whether all required files exist.
+      # If any file is missing, exit 1 so the workflow fails.
+      - name: Check Required Files
+        run: |
+          required_files=(
+            "index.html"
+            "script.js"
+            "style.css"
+            "README.md"
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "필수 파일이 없습니다: $file"
+              exit 1
+            fi
+          done
+
+          echo "모든 필수 파일이 존재합니다."
